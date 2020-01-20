@@ -35,7 +35,6 @@ park_n <- ifelse(which(park == park.list$park.code),paste(park.list$park.name), 
 park_name <- as.character(park_n)
 total_entries <- table1$iNaturalist_Entry_count
 total_entries <- sum(table1[, 'iNaturalist_Entry_count'])
-taxon_categories <- "TAXON CAT Placeholder"
 total_species <- nrow(table1)
 matching_species <- nrow(table1[which(table1$Match.NPSpecies=="Match" | table1$Match.NPSpecies=="ITIS Match"), ])
 taxonmic_updates <- nrow(table2)
