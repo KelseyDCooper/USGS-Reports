@@ -39,7 +39,7 @@ total_species <- nrow(table1)
 matching_species <- nrow(table1[which(table1$Match.NPSpecies=="Match" | table1$Match.NPSpecies=="ITIS Match"), ])
 taxonmic_updates <- nrow(table2)
 unique_species <- nrow(table3)
-new_invasives <- nrow(table3[which(table1$Match.NPSpecies=="Yes"), ])
+new_invasives <- nrow(table3[which(table3$Invasive.Record=="Yes"), ])
 unique_taxa <- unique(table1$Iconic_taxa)
 ```
 
