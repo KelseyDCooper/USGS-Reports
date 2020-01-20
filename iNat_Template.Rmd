@@ -1,0 +1,117 @@
+---
+output:
+  pdf_document: default
+  word_document: default
+  html_document:
+    df_print: paged
+---
+```{r include=FALSE}
+library(readr)
+library(readxl)
+library(pdftools)
+library(kableExtra)
+```
+
+```{r include=FALSE}
+park <- "ACAD"
+```
+
+```{r include=FALSE}
+
+table1 <- read.csv(paste0("~/Desktop/20200112_reports","/",park,"/",park,"_table1.csv")) 
+table1$X = NULL
+table2 <- read.csv(paste0("~/Desktop/20200112_reports","/",park,"/",park,"_table2.csv")) 
+table2$X = NULL
+table3 <- read.csv(paste0("~/Desktop/20200112_reports","/",park,"/",park,"_table3.csv")) 
+table3$X = NULL
+table4 <- read.csv(paste0("~/Desktop/20200112_reports","/",park,"/",park,"_table4.csv")) 
+table4$X = NULL
+
+```
+
+```{r include=FALSE}
+park.list <- read.csv('https://raw.githubusercontent.com/KelseyDCooper/USGS-NPS-App/master/park.slugs.csv', header = T)
+park_n <- ifelse(which(park == park.list$park.code),paste(park.list$park.name), park)
+park_name <- as.character(park_n)
+total_entries <- table1$iNaturalist_Entry_count
+total_entries <- sum(table1[, 'iNaturalist_Entry_count'])
+taxon_categories <- "TAXON CAT Placeholder"
+total_species <- nrow(table1)
+matching_species <- nrow(table1[which(table1$Match.NPSpecies=="Match" | table1$Match.NPSpecies=="ITIS Match"), ])
+taxonmic_updates <- nrow(table2)
+unique_species <- nrow(table3)
+new_invasives <- nrow(table3[which(table1$Match.NPSpecies=="Yes"), ])
+unique_taxa <- unique(table1$Iconic_taxa)
+```
+
+\large
+# __Updates to the `r park_name` Biodiversity List: Results from the 2016 Centennial BioBlitz by Comparison of the NPSpecies List & iNaturalist Observations__
+
+__Prepared for:__  `r park_name`
+
+__Prepared by:__ Toni Lyn Morelli (Northeast Climate Adaptation Science Center, USGS), Amanda Katzer (University of Kansas), Kelsey Cooper (Indiana University), Jennifer Briggs (University of Colorado), Erin Boydston (USGS)
+
+\newpage
+\normalsize
+
+## __Introduction:__
+
+The 2016 BioBlitz of National Parks in celebration of the U.S. National Park Service Centennial sparked BioBlitz events at hundreds of park units, with results captured online in the iNaturalist database. In addition to engaging the public in nature and science, the 2016 BioBlitz of national parks created new opportunities to evaluate potential contributions of citizen science to information needs about park biodiversity. Capturing biodiversity through inventories of species is notoriously difficult for a myriad of reasons, and maintaining and comparing biological inventories can be hampered by species naming systems, classification, and taxonomy. Further, land use and climate change stressors may be leading to accelerated biodiversity changes. Because of these issues, we are reaching out to individual parks for input on 2016 BioBlitz results in hopes of making results as widely useful as possible.
+
+More than `r total_entries` entries of photographed organisms were posted to iNaturalist for `r park_name` during the 2016 National BioBlitz event. We are working to compare these entries to the `r park_name` species list from NPSpecies to look for potential species distribution changes, taxonomy name updates, and to see what species are being spotted by visitors and other BioBlitz participants. 
+
+In iNaturalist, participants posted photos of species they observed. Location information was automatically read via the iNaturalist app, if the record was uploaded via a smartphone or web-enabled camera; otherwise location information could be entered manually. Then, the observer and community of iNaturalist users, identifies the organism. When an entry has been identified by 2 different users, the entry becomes research grade. 
+
+Using these research grade entries, we have done some preliminary data sorting and analyses. This includes: (1) an entire list of research grade species found during the 2016 Centennial BioBlitz, with indications of whether they match the existing NPSpecies list for `r park_name` (Table 1), (2) a bar chart indicating research grade species that were found in the BioBlitz, but were not in the NPSpecies database (Figure 1), (3) a table indicating synonymous taxonomy that iNaturalist uses for species found in the ITIS database that match the `r park_name` NPSpecies list (Table 2), (4) a table of species not found in the NPSpecies database that were entered into iNaturalist, were not due to a change in taxonomy from ITIS, and were not found in the first synonym entry in the NPSpecies database (Table 3) and (5) a table of organisms not included in NPSpecies that fall into one of the following taxon categories: `r unique_taxa`. 
+
+__Summary:__  
+_# of unique species seen:_ `r total_species`  
+_# of species matching:_ `r matching_species`  
+_# of species needing taxonomic updates:_ `r taxonmic_updates`  
+_# of potentially unique species:_ `r unique_species`  
+_# of potential new invasives:_ `r new_invasives`  
+
+\newpage
+
+__Figure 1.__ Taxa categories differing from the NPSpecies list. Each species found is a research grade entry on iNaturalist.
+
+```{r echo=FALSE}
+pdf_image <- paste0("~/Desktop/20200112_reports","/",park,"/",park,"_figure1.pdf")
+  
+knitr::include_graphics(pdf_image)
+
+```
+
+\newpage
+
+__Table 1.__ Research Grade species recorded during the `r total_entries` NPS Centennial Bioblitz and whether the species matches an existing record in its NPSpecies list or reflects a taxonomic change (Table 2), a previously unrecorded species in the NPSpecies database (Table 3), or a species that falls into one of the following taxa: `r unique_taxa` (Table 4).
+
+```{r echo=FALSE}
+kable(table1 , "latex", longtable = T, booktabs = T) %>%
+  kable_styling(latex_options = c("repeat_header"), font_size = 7)
+```
+
+
+\newpage
+__Table 2.__ Suggestions for taxonomic updates to the `r park_name` NPSpecies list, based on NPS Centennial Bioblitz observations.
+```{r echo=FALSE}
+kable(table2 , "latex", longtable = T, booktabs = T) %>%
+  kable_styling(latex_options = c("repeat_header"), font_size = 7)
+```
+
+\newpage
+__Table 3.__ Research Grade observations from the NPS Centennial BioBlitz of species without exact matches or synonymous taxonomy in the current NPSpecies list.
+```{r echo=FALSE}
+kable(table3, "latex", longtable = T, booktabs = T) %>%
+  column_spec(3, width = "20em") %>%
+  kable_styling(latex_options = c("repeat_header"), font_size = 7)
+```
+
+\newpage
+__Table 4.__ Research grade observatiosn from `r park_name` that were not found in the NPSpecies database that were entered into iNaturalist, were not due to a change in taxonomy from ITIS, and were not found in the first synonym entry in the NPSpecies database (Table 3) and (5) a table of organisms not included in NPSpecies that fall into one of the following taxon categories: `r unique_taxa` . 
+```{r echo=FALSE}
+kable(table4 , "latex", longtable = T, booktabs = T) %>%
+  kable_styling(latex_options = c("repeat_header"), font_size = 7)
+```
+
+
