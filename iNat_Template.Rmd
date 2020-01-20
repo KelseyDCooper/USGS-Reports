@@ -31,8 +31,7 @@ table4$X = NULL
 
 ```{r include=FALSE}
 park.list <- read.csv('https://raw.githubusercontent.com/KelseyDCooper/USGS-NPS-App/master/park.slugs.csv', header = T)
-park_n <- ifelse(which(park == park.list$park.code),paste(park.list$park.name), park)
-park_name <- as.character(park_n)
+park_name <- ifelse(which(park == park.list$park.code),paste(park.list[which(park.list$park.code == park),]$park.name))
 total_entries <- table1$iNaturalist_Entry_count
 total_entries <- sum(table1[, 'iNaturalist_Entry_count'])
 total_species <- nrow(table1)
@@ -83,7 +82,7 @@ knitr::include_graphics(pdf_image)
 
 \newpage
 
-__Table 1.__ Research Grade species recorded during the `r total_entries` NPS Centennial Bioblitz and whether the species matches an existing record in its NPSpecies list or reflects a taxonomic change (Table 2), a previously unrecorded species in the NPSpecies database (Table 3), or a species that falls into one of the following taxa: `r unique_taxa` (Table 4).
+__Table 1.__ `r total_species`  Research Grade species recorded during the `r park_name` NPS Centennial Bioblitz and whether the species matches an existing record in its NPSpecies list or reflects a taxonomic change (Table 2), a previously unrecorded species in the NPSpecies database (Table 3), or a species that falls into one of the following taxa: `r unique_taxa` (Table 4).
 
 ```{r echo=FALSE}
 kable(table1 , "latex", longtable = T, booktabs = T) %>%
